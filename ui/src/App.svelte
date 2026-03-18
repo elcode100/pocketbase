@@ -12,9 +12,21 @@
     import { superuser } from "@/stores/superuser";
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
+    import { onMount } from "svelte";
     import Router, { link, replace } from "svelte-spa-router";
     import active from "svelte-spa-router/active";
     import routes from "./routes";
+
+    // Load PBConsole redirect URL from pb_public at runtime
+    onMount(async () => {
+        try {
+            const res = await fetch("/pbconsole_url.txt");
+            if (res.ok) {
+                const url = (await res.text()).trim();
+                if (url) window.__pbconsoleUrl = url;
+            }
+        } catch {}
+    });
 
     let oldLocation = undefined;
 
@@ -84,9 +96,9 @@
     {#if $superuser?.id && showAppSidebar}
         <aside class="app-sidebar">
             <a
-                href="__PBCONSOLE_URL__"
+                href="/"
                 class="logo logo-sm"
-                on:click|preventDefault={() => { window.location.href = "__PBCONSOLE_URL__" || "/"; }}
+                on:click|preventDefault={() => { window.location.href = window.__pbconsoleUrl || '/'; }}
             >
                 <img
                     src="{import.meta.env.BASE_URL}images/logo.svg"

@@ -27,6 +27,7 @@ RUN go mod download
 COPY . .
 
 # Copy the custom-built UI into the embedded directory
+# (Go's embed directive bundles this into the binary)
 COPY --from=ui-builder /build/ui/dist ./ui/dist
 
 # Build the PocketBase binary
@@ -41,13 +42,10 @@ RUN apk add --no-cache ca-certificates
 
 WORKDIR /app
 
-# Copy PocketBase binary
+# Copy PocketBase binary (admin UI is embedded inside)
 COPY --from=go-builder /app/pocketbase /app/pocketbase
 
-# Copy the custom UI to pb_public (PB serves this instead of embedded UI)
-COPY --from=ui-builder /build/ui/dist /app/pb_public
-
-# Copy the entrypoint script
+# Copy the entrypoint script (writes PBCONSOLE_URL to pb_public at runtime)
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
