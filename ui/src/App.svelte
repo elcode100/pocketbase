@@ -83,7 +83,11 @@
 <div class="app-layout">
     {#if $superuser?.id && showAppSidebar}
         <aside class="app-sidebar">
-            <a href="/" class="logo logo-sm" use:link>
+            <a
+                href="__PBCONSOLE_URL__"
+                class="logo logo-sm"
+                on:click|preventDefault={() => { window.location.href = "__PBCONSOLE_URL__" || "/"; }}
+            >
                 <img
                     src="{import.meta.env.BASE_URL}images/logo.svg"
                     alt="PocketBase logo"
