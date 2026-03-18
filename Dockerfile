@@ -15,7 +15,7 @@ RUN npm run build
 # ─────────────────────────────────────────────────────────────
 # Stage 2: Build PocketBase Go binary
 # ─────────────────────────────────────────────────────────────
-FROM golang:1.24-alpine AS go-builder
+FROM golang:1.25-alpine AS go-builder
 
 WORKDIR /build
 
