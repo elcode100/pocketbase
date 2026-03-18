@@ -55,9 +55,9 @@ VOLUME /app/pb_hooks
 
 EXPOSE 8080
 
-# Health check — matches original Coolify PocketBase image behavior
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-    CMD curl -sf http://localhost:8080/api/health || exit 1
+# Health check — identical to original Coolify PocketBase image
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl --fail http://localhost:8080/api/health || exit 1
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:8080"]
