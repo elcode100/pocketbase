@@ -17,13 +17,13 @@
     import active from "svelte-spa-router/active";
     import routes from "./routes";
 
-    // Load PBConsole redirect URL from pb_public at runtime
+    // Load PBConsole redirect URL from pb_hooks API at runtime
     onMount(async () => {
         try {
-            const res = await fetch("/pbconsole_url.txt");
+            const res = await fetch("/api/pbconsole-url");
             if (res.ok) {
-                const url = (await res.text()).trim();
-                if (url) window.__pbconsoleUrl = url;
+                const data = await res.json();
+                if (data?.url) window.__pbconsoleUrl = data.url;
             }
         } catch {}
     });

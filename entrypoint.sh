@@ -1,12 +1,17 @@
 #!/bin/sh
 set -e
 
-# Write the PBConsole dashboard redirect URL to a text file in pb_public.
-# The Svelte admin UI fetches this file at runtime to know where to redirect
-# when the logo is clicked. This avoids needing to modify the compiled Go binary.
-mkdir -p /app/pb_public
+# Create a PocketBase JS hook that serves the PBCONSOLE_URL via API endpoint.
+# This avoids creating pb_public (which causes PocketBase to treat root requests
+# as static file lookups, generating hundreds of 404 errors in the logs).
 if [ -n "$PBCONSOLE_URL" ]; then
-    echo "$PBCONSOLE_URL" > /app/pb_public/pbconsole_url.txt
+    mkdir -p /app/pb_hooks
+    cat > /app/pb_hooks/pbconsole.pb.js << 'HOOKEOF'
+routerAdd("GET", "/api/pbconsole-url", (e) => {
+    const url = $os.getenv("PBCONSOLE_URL");
+    return e.JSON(200, { url: url || "" });
+});
+HOOKEOF
 fi
 
 exec "$@"
