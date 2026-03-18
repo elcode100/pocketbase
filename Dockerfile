@@ -38,14 +38,14 @@ RUN CGO_ENABLED=0 go build -o /app/pocketbase ./examples/base
 # ─────────────────────────────────────────────────────────────
 FROM alpine:3.20
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates curl
 
 WORKDIR /app
 
 # Copy PocketBase binary (admin UI is embedded inside)
 COPY --from=go-builder /app/pocketbase /app/pocketbase
 
-# Copy the entrypoint script (writes PBCONSOLE_URL to pb_public at runtime)
+# Copy the entrypoint script (writes PBCONSOLE_URL hook to pb_hooks at runtime)
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
@@ -54,6 +54,10 @@ VOLUME /app/pb_data
 VOLUME /app/pb_hooks
 
 EXPOSE 8080
+
+# Health check — matches original Coolify PocketBase image behavior
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -sf http://localhost:8080/api/health || exit 1
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:8080"]
