@@ -8,9 +8,9 @@ if [ -n "$PBCONSOLE_URL" ]; then
     mkdir -p /app/pb_hooks
     cat > /app/pb_hooks/pbconsole.pb.js << 'HOOKEOF'
 routerAdd("GET", "/api/pbconsole-url", (e) => {
-    const url = $os.getenv("PBCONSOLE_URL");
-    return e.JSON(200, { url: url || "" });
-});
+    const url = $os.getenv("PBCONSOLE_URL")
+    return e.json(200, { "url": url || "" })
+})
 HOOKEOF
 fi
 
