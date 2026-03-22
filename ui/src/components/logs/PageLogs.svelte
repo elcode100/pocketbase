@@ -80,9 +80,9 @@
 
             <div class="flex-fill" />
 
-            <div class="inline-flex" style="gap: 15px; align-items: center;">
+            <div class="inline-flex" style="gap: 20px; align-items: center;">
                 {#if $appName}
-                    <span class="txt" style="font-size: var(--smFontSize); color: var(--txtHintColor);">{$appName}</span>
+                    <span style="font-size: 19px; font-weight: normal; line-height: 1; color: var(--txtDisabledColor);">{$appName}</span>
                 {/if}
                 <Field class="form-field form-field-toggle m-0" let:uniqueId>
                     <input type="checkbox" id={uniqueId} bind:checked={withSuperuserLogs} />

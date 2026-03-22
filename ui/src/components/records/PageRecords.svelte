@@ -200,7 +200,7 @@
 
             <div class="btns-group">
                 {#if $appName}
-                    <span class="txt" style="font-size: var(--smFontSize); color: var(--txtHintColor); padding-right: 5px;">{$appName}</span>
+                    <span style="font-size: 19px; font-weight: normal; line-height: 1; color: var(--txtDisabledColor); padding-right: 5px;">{$appName}</span>
                 {/if}
                 <button
                     type="button"
