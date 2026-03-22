@@ -13,13 +13,15 @@ routerAdd("GET", "/api/pbconsole-url", (e) => {
     return e.json(200, { "url": url || "" })
 })
 
-// Auto-set Application name from APP_NAME env var on first boot
+// Auto-set Application name from APP_NAME env var on startup
+// e.next() must be called first to ensure the database is initialized
 onBootstrap((e) => {
+    e.next()
+
     const appName = $os.getenv("APP_NAME")
     if (!appName) return
 
     const settings = e.app.settings()
-    // Only set if still default "Acme" or empty
     if (settings.meta.appName === "Acme" || !settings.meta.appName) {
         settings.meta.appName = appName
         e.app.save(settings)
