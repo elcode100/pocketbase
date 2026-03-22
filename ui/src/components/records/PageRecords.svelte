@@ -200,7 +200,10 @@
 
             <div class="btns-group">
                 {#if $appName}
-                    <span style="font-size: 19px; font-weight: normal; line-height: 1; color: var(--txtDisabledColor); padding-right: 5px;">{$appName}</span>
+                    <a href="#/collections" style="display: inline-flex; align-items: center; gap: 5px; font-size: 19px; font-weight: normal; line-height: 1; color: #1a1a24; text-decoration: none; cursor: pointer; padding-right: 5px;">
+                        <i class="ri-box-3-line" style="font-size: 20px; color: #9ca3af;"></i>
+                        {$appName}
+                    </a>
                 {/if}
                 <button
                     type="button"

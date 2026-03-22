@@ -80,10 +80,14 @@
 
             <div class="flex-fill" />
 
-            <div class="inline-flex" style="gap: 20px; align-items: center;">
-                {#if $appName}
-                    <span style="font-size: 19px; font-weight: normal; line-height: 1; color: var(--txtDisabledColor);">{$appName}</span>
-                {/if}
+            {#if $appName}
+                <a href="#/collections" style="display: inline-flex; align-items: center; gap: 5px; font-size: 19px; font-weight: normal; line-height: 1; color: #1a1a24; text-decoration: none; cursor: pointer;">
+                    <i class="ri-box-3-line" style="font-size: 20px; color: #9ca3af;"></i>
+                    {$appName}
+                </a>
+            {/if}
+
+            <div class="inline-flex">
                 <Field class="form-field form-field-toggle m-0" let:uniqueId>
                     <input type="checkbox" id={uniqueId} bind:checked={withSuperuserLogs} />
                     <label for={uniqueId}>Include requests by superusers</label>
