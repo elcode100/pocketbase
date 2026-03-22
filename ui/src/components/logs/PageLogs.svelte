@@ -1,6 +1,6 @@
 <script>
     import { querystring } from "svelte-spa-router";
-    import { pageTitle } from "@/stores/app";
+    import { appName, pageTitle } from "@/stores/app";
     import CommonHelper from "@/utils/CommonHelper";
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -65,6 +65,10 @@
             <nav class="breadcrumbs">
                 <div class="breadcrumb-item">{$pageTitle}</div>
             </nav>
+
+            {#if $appName}
+                <span class="label label-primary app-name-badge" title={$appName}>{$appName}</span>
+            {/if}
 
             <button
                 type="button"

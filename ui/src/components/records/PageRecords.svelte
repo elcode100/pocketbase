@@ -13,7 +13,7 @@
     import RecordUpsertPanel from "@/components/records/RecordUpsertPanel.svelte";
     import RecordsCount from "@/components/records/RecordsCount.svelte";
     import RecordsList from "@/components/records/RecordsList.svelte";
-    import { hideControls, pageTitle } from "@/stores/app";
+    import { appName, hideControls, pageTitle } from "@/stores/app";
     import {
         activeCollection,
         changeActiveCollectionByIdOrName,
@@ -199,6 +199,9 @@
             </div>
 
             <div class="btns-group">
+                {#if $appName}
+                    <span class="label label-primary app-name-badge" title={$appName}>{$appName}</span>
+                {/if}
                 <button
                     type="button"
                     class="btn btn-outline"
