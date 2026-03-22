@@ -63,12 +63,11 @@
     <div class="page-header-wrapper m-b-0">
         <header class="page-header">
             <nav class="breadcrumbs">
+                {#if $appName}
+                    <div class="breadcrumb-item" style="color: var(--txtHintColor)">{$appName}</div>
+                {/if}
                 <div class="breadcrumb-item">{$pageTitle}</div>
             </nav>
-
-            {#if $appName}
-                <span class="label label-primary app-name-badge" title={$appName}>{$appName}</span>
-            {/if}
 
             <button
                 type="button"

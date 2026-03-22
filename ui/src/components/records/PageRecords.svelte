@@ -173,6 +173,9 @@
     <PageWrapper class="flex-content">
         <header class="page-header">
             <nav class="breadcrumbs">
+                {#if $appName}
+                    <div class="breadcrumb-item" style="color: var(--txtHintColor)">{$appName}</div>
+                {/if}
                 <div class="breadcrumb-item">Collections</div>
                 <div class="breadcrumb-item">{$activeCollection.name}</div>
             </nav>
@@ -199,9 +202,6 @@
             </div>
 
             <div class="btns-group">
-                {#if $appName}
-                    <span class="label label-primary app-name-badge" title={$appName}>{$appName}</span>
-                {/if}
                 <button
                     type="button"
                     class="btn btn-outline"
