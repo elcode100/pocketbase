@@ -63,9 +63,6 @@
     <div class="page-header-wrapper m-b-0">
         <header class="page-header">
             <nav class="breadcrumbs">
-                {#if $appName}
-                    <div class="breadcrumb-item" style="color: var(--txtHintColor)">{$appName}</div>
-                {/if}
                 <div class="breadcrumb-item">{$pageTitle}</div>
             </nav>
 
@@ -83,7 +80,10 @@
 
             <div class="flex-fill" />
 
-            <div class="inline-flex">
+            <div class="inline-flex" style="gap: 15px; align-items: center;">
+                {#if $appName}
+                    <span class="txt" style="font-size: var(--smFontSize); color: var(--txtHintColor);">{$appName}</span>
+                {/if}
                 <Field class="form-field form-field-toggle m-0" let:uniqueId>
                     <input type="checkbox" id={uniqueId} bind:checked={withSuperuserLogs} />
                     <label for={uniqueId}>Include requests by superusers</label>
