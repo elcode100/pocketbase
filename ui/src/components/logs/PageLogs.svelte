@@ -85,6 +85,7 @@
                     <i class="ri-box-3-line" style="font-size: 20px; color: #9ca3af;"></i>
                     {$appName}
                 </a>
+                <span style="font-size: 19px; font-weight: normal; line-height: 1; color: var(--txtDisabledColor); padding: 0 8px; opacity: 0.4;">/</span>
             {/if}
 
             <div class="inline-flex">
