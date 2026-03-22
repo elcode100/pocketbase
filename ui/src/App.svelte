@@ -17,17 +17,13 @@
     import active from "svelte-spa-router/active";
     import routes from "./routes";
 
-    // Load PBConsole config from pb_hooks API at runtime
+    // Load PBConsole redirect URL from pb_hooks API at runtime
     onMount(async () => {
         try {
             const res = await fetch("/api/pbconsole-url");
             if (res.ok) {
                 const data = await res.json();
                 if (data?.url) window.__pbconsoleUrl = data.url;
-                if (data?.appName) {
-                    window.__pbconsoleAppName = data.appName;
-                    $appName = data.appName;
-                }
             }
         } catch {}
     });
@@ -70,7 +66,7 @@
             const settings = await ApiClient.settings.getAll({
                 $cancelKey: "initialAppSettings",
             });
-            $appName = window.__pbconsoleAppName || settings?.meta?.appName || "";
+            $appName = settings?.meta?.appName || "";
             $hideControls = !!settings?.meta?.hideControls;
         } catch (err) {
             if (!err?.isAbort) {
