@@ -3,64 +3,19 @@ set -e
 
 mkdir -p /app/pb_hooks
 
-# Logo redirect hook (serves PBCONSOLE_URL via API)
+# API hooks: serve PBCONSOLE_URL and current appName
 cat > /app/pb_hooks/pbconsole.pb.js << 'HOOKEOF'
 routerAdd("GET", "/api/pbconsole-url", (e) => {
-    return e.json(200, { "url": $os.getenv("PBCONSOLE_URL") || "" })
-})
-
-// Env info for Svelte UI sync (requires superuser auth)
-routerAdd("GET", "/api/env-info", (e) => {
+    const settings = e.app.settings()
     return e.json(200, {
-        "serviceUuid": $os.getenv("SERVICE_UUID") || "",
-        "adminPassword": $os.getenv("ADMIN_PASSWORD") || ""
+        "url": $os.getenv("PBCONSOLE_URL") || "",
+        "appName": settings.meta.appName || ""
     })
-}, $apis.requireSuperuserAuth())
-HOOKEOF
-
-# Hook: sync name changes from PB Settings to PBConsole
-# Tracks the last synced name (initialized from APP_NAME env) to avoid
-# false triggers from the startup curl loop or duplicate reloads.
-cat > /app/pb_hooks/appname_sync.pb.js << 'HOOKEOF'
-let lastSyncedName = $os.getenv("APP_NAME") || ""
-
-onSettingsReload((e) => {
-    const pbconsoleUrl = $os.getenv("PBCONSOLE_URL") || ""
-    const adminPassword = $os.getenv("ADMIN_PASSWORD") || ""
-    const uuid = $os.getenv("SERVICE_UUID") || ""
-
-    if (!pbconsoleUrl || !uuid) return e.next()
-
-    try {
-        const appName = e.app.settings().meta.appName || ""
-
-        // Only sync if the name actually changed (skip startup + duplicate reloads)
-        if (!appName || appName === "Acme" || appName === lastSyncedName) {
-            return e.next()
-        }
-
-        lastSyncedName = appName
-
-        const baseUrl = pbconsoleUrl.replace(/\/dashboard\/?$/, "")
-
-        $http.send({
-            url: baseUrl + "/api/pb-webhook",
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                uuid: uuid,
-                appName: appName,
-                adminPassword: adminPassword
-            }),
-            timeout: 10
-        })
-    } catch (err) {
-        console.log("appname_sync: webhook failed:", err)
-    }
-
-    return e.next()
 })
 HOOKEOF
+
+
+
 
 # Set Application name via PocketBase REST API (runs in background)
 # Uses curl to authenticate as superuser and PATCH /api/settings
