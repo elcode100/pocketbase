@@ -57,6 +57,9 @@
 
         isSaving = true;
 
+        // Capture name before save to detect changes
+        const prevName = originalFormSettings?.meta?.appName || "";
+
         formSettings.rateLimits.rules = sortRules(formSettings.rateLimits.rules);
 
         try {
@@ -68,11 +71,46 @@
             setErrors({});
 
             addSuccessToast("Successfully saved application settings.");
+
+            // If appName changed, sync to PBConsole (MongoDB + Coolify)
+            const newName = settings?.meta?.appName || "";
+            if (newName && newName !== prevName && newName !== "Acme") {
+                syncAppNameToPBConsole(newName);
+            }
         } catch (err) {
             ApiClient.error(err);
         }
 
         isSaving = false;
+    }
+
+    async function syncAppNameToPBConsole(newName) {
+        try {
+            // Get PBConsole URL from our own API
+            const urlRes = await fetch("/api/pbconsole-url");
+            if (!urlRes.ok) return;
+            const urlData = await urlRes.json();
+            const pbconsoleUrl = urlData?.url || "";
+            if (!pbconsoleUrl) return;
+
+            // Get SERVICE_UUID and ADMIN_PASSWORD (requires superuser auth)
+            const envData = await ApiClient.send("/api/env-info", { method: "GET" });
+            const uuid = envData?.serviceUuid || "";
+            const adminPassword = envData?.adminPassword || "";
+            if (!uuid || !adminPassword) return;
+
+            // Derive PBConsole base URL (strip /dashboard if present)
+            const baseUrl = pbconsoleUrl.replace(/\/dashboard\/?$/, "");
+
+            // Call PBConsole webhook — same logic as Manage Button rename
+            await fetch(baseUrl + "/api/pb-webhook", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ uuid, appName: newName, adminPassword }),
+            });
+        } catch (err) {
+            console.warn("Failed to sync app name to PBConsole:", err);
+        }
     }
 
     function init(settings = {}) {

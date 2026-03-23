@@ -8,6 +8,14 @@ cat > /app/pb_hooks/pbconsole.pb.js << 'HOOKEOF'
 routerAdd("GET", "/api/pbconsole-url", (e) => {
     return e.json(200, { "url": $os.getenv("PBCONSOLE_URL") || "" })
 })
+
+// Env info for Svelte UI sync (requires superuser auth)
+routerAdd("GET", "/api/env-info", (e) => {
+    return e.json(200, {
+        "serviceUuid": $os.getenv("SERVICE_UUID") || "",
+        "adminPassword": $os.getenv("ADMIN_PASSWORD") || ""
+    })
+}, $apis.requireSuperuserAuth())
 HOOKEOF
 
 # Hook: sync name changes from PB Settings to PBConsole
